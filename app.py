@@ -1,5 +1,23 @@
 import streamlit as st
 from modules.RAG import get_pdf_text
+from modules.RAG import get_text_chunks
+from modules.RAG import get_vectorstore
+from dotenv import load_dotenv
+import os
+def main():
+    load_dotenv()
+    st.header("Chat with multiple pdf")
+    st.text_input("Ask Question about your pdf")
+    with st.sidebar:
+        st.subheader("Upload your pdf file")
+        pdf_file = st.file_uploader("Upload your pdf", type=["pdf"], accept_multiple_files=True)
+        if st.button("Process"):
+            with st.spinner("Processing..."):
+                raw_text=get_pdf_text(pdf_file)
 
-st.header("Chat with multiple pdf")
-uploaded_files = st.file_uploader("Upload PDF files", accept_multiple_files=True, type=["pdf"])
+                text_chunks=get_text_chunks(raw_text)
+
+                vectordb=get_vectorstore(text_chunks)
+
+if __name__ == "__main__":
+    main()
