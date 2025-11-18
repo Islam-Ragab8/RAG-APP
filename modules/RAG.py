@@ -1,6 +1,9 @@
 from langchain.embeddings import HuggingFaceEmbeddings,HuggingFaceInstructEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.text_splitter import CharacterTextSplitter
+from langchain.memory import ConversationBufferMemory
+from langchain.chains import ConversationalRetrievalChain
+from langchain.chat_models import ChatOpenAI
 import PyPDF2
 
 
@@ -26,7 +29,19 @@ def get_text_chunks(text):
 
 
 def get_vectorstore(chunks):
-    # embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-    embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
+    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    # embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
     vectorstore = FAISS.from_texts(chunks, embedding=embeddings)
     return vectorstore
+
+
+def conversation_chain(vectorstore):
+    memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True)
+    llm=ChatOpenAI()
+    conversation_chain=ConversationalRetrievalChain.from_llm(
+        llm=llm,
+        retriever=vectorstore.as_retriever(),
+        memory=memory
+    )
+    return conversation_chain
+    
