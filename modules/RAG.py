@@ -1,12 +1,12 @@
-from langchain.embeddings import HuggingFaceEmbeddings,HuggingFaceInstructEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings,HuggingFaceInstructEmbeddings,OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 import PyPDF2
-
-
+import streamlit as st
+# import sentence_transformers
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -29,6 +29,7 @@ def get_text_chunks(text):
 
 
 def get_vectorstore(chunks):
+    #embeddings = OpenAIEmbeddings()
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     # embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
     vectorstore = FAISS.from_texts(chunks, embedding=embeddings)
@@ -45,3 +46,6 @@ def conversation_chain(vectorstore):
     )
     return conversation_chain
     
+def query_user(question):
+    response=st.session_state.conversation({"question": question})
+    st.write(response)
