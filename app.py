@@ -26,6 +26,8 @@ def main():
                 text_chunks=get_text_chunks(raw_text)
 
                 vectordb=get_vectorstore(text_chunks)
+                if 'conversation' not in st.session_state:
+                   st.session_state.conversation = None
 
                 st.session_state.conversation=conversation_chain(vectordb)
 

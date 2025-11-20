@@ -1,11 +1,18 @@
-from langchain.embeddings import HuggingFaceEmbeddings,HuggingFaceInstructEmbeddings,OpenAIEmbeddings
-from langchain.vectorstores import FAISS
+# from langchain.embeddings import HuggingFaceEmbeddings,HuggingFaceInstructEmbeddings,OpenAIEmbeddings
+# from langchain.vectorstores import FAISS
+# from langchain.text_splitter import CharacterTextSplitter
+# from langchain.memory import ConversationBufferMemory
+# from langchain.chains import ConversationalRetrievalChain
+# from langchain.chat_models import ChatOpenAI
+import PyPDF2
+import streamlit as st
+
+from langchain_community.embeddings import HuggingFaceEmbeddings, HuggingFaceInstructEmbeddings, OpenAIEmbeddings
+from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
-from langchain.chat_models import ChatOpenAI
-import PyPDF2
-import streamlit as st
+from langchain_community.chat_models import ChatOpenAI
 # import sentence_transformers
 
 def get_pdf_text(pdf_docs):
@@ -38,7 +45,7 @@ def get_vectorstore(chunks):
 
 def conversation_chain(vectorstore):
     memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True)
-    llm=ChatOpenAI()
+    llm=ChatOpenAI( temperature=0,)
     conversation_chain=ConversationalRetrievalChain.from_llm(
         llm=llm,
         retriever=vectorstore.as_retriever(),
