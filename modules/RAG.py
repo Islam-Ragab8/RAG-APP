@@ -47,5 +47,8 @@ def conversation_chain(vectorstore):
     return conversation_chain
     
 def query_user(question):
-    response=st.session_state.conversation({"question": question})
+    if 'conversation' not in st.session_state or st.session_state.conversation is None:
+        st.warning("Please upload and process a PDF first.")
+        return
+    response = st.session_state.conversation({"question": question})
     st.write(response)
