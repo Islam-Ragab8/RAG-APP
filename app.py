@@ -7,11 +7,21 @@ from modules.RAG import query_user
 from dotenv import load_dotenv
 import os
 
+
+def handle_user_input(user_question):
+    response=st.session_state.conversation({"question": user_question})
+    st.session_state.chat_history=response['chat_history']
+    for i, message in enumerate(st.session_state.chat_history):
+        if i % 2 == 0:
+            st.markdown(f"**User:** {message.content}")
+        else:
+            st.markdown(f"**Bot:** {message.content}")
+
 def main():
     load_dotenv()
-    st.header("Chat with multiple pdf")
+    st.header("Chat with multiple pdf files :books:")
 
-    user_question=st.text_input("Ask Question about your pdf")
+    user_question=st.text_input("Ask Question about your pdf ")
     if user_question:
         query_user(user_question)
 

@@ -7,12 +7,12 @@
 import PyPDF2
 import streamlit as st
 
-from langchain_community.embeddings import HuggingFaceEmbeddings, HuggingFaceInstructEmbeddings, OpenAIEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings,  OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
-from langchain_community.chat_models import ChatOpenAI
+from modules.Request import RemoteLLM
 # import sentence_transformers
 
 def get_pdf_text(pdf_docs):
@@ -36,8 +36,12 @@ def get_text_chunks(text):
 
 
 def get_vectorstore(chunks):
-    #embeddings = OpenAIEmbeddings()
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    embeddings = HuggingFaceEmbeddings(
+       model_name="sentence-transformers/all-MiniLM-L6-v2",
+       model_kwargs={"device": "cpu"}
+    )
+                                       
+                                       
     # embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
     vectorstore = FAISS.from_texts(chunks, embedding=embeddings)
     return vectorstore
@@ -45,7 +49,10 @@ def get_vectorstore(chunks):
 
 def conversation_chain(vectorstore):
     memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True)
-    llm=ChatOpenAI( temperature=0,)
+    llm=RemoteLLM(
+    api_url="https://ebc1174d3038.ngrok-free.app/generate",
+    api_key="secret123"
+          )    
     conversation_chain=ConversationalRetrievalChain.from_llm(
         llm=llm,
         retriever=vectorstore.as_retriever(),
