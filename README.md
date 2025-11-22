@@ -62,7 +62,7 @@ project/
 
 1-Clone the repository:
 ```bash
-git clone <[your-repo-url](https://github.com/Islam-Ragab8/RAG-APP)>
+git clone <(https://github.com/Islam-Ragab8/RAG-APP)>
 
 cd <RAG-APP>
 ```

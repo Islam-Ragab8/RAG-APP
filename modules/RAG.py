@@ -47,7 +47,7 @@ def get_vectorstore(chunks):
 def conversation_chain(vectorstore):
     memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True)
     llm=RemoteLLM(
-    api_url=api_url,
+    api_url="https://f391b9dfa7d7.ngrok-free.app/generate",
     api_key=api_key
     ) 
 
@@ -75,5 +75,5 @@ def query_user(question):
 
     with st.chat_message("assistant"):
         st.write(answer_text)
-
-
+    st.session_state.chat_history.append((question, answer_text))
+    return answer_text
