@@ -6,13 +6,12 @@ from dotenv import load_dotenv
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain.text_splitter import CharacterTextSplitter
+from langchain.text_splitter import CharacterTextSplitter,RecursiveCharacterTextSplitter
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from modules.Request import RemoteLLM
-
 load_dotenv()
-api_url=os.getenv("API_URL")
+
 api_key=os.getenv("SEKRT_KEY")
 
 def get_pdf_text(pdf_docs):
@@ -25,11 +24,10 @@ def get_pdf_text(pdf_docs):
 
 
 def get_text_chunks(text):
-    text_splitter = CharacterTextSplitter(
-        separator="\n",
+    text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
         chunk_overlap=200,
-        length_function=len
+        separators=["\n\n", "\n", " ", ""]
     )
     chunks = text_splitter.split_text(text)
     return chunks
@@ -47,9 +45,8 @@ def get_vectorstore(chunks):
 def conversation_chain(vectorstore):
     memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True)
     llm=RemoteLLM(
-    api_url="https://f391b9dfa7d7.ngrok-free.app/generate",
-    api_key=api_key
-    ) 
+    api_url="https://09fae5d4ee32.ngrok-free.app/generate",
+    api_key=api_key) 
 
     conversation_chain=ConversationalRetrievalChain.from_llm(
         llm=llm,

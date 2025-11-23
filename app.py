@@ -2,6 +2,9 @@ import streamlit as st
 from modules.RAG import get_pdf_text, get_text_chunks, get_vectorstore, conversation_chain, query_user
 from dotenv import load_dotenv
 
+
+
+
 def main():
     load_dotenv()
     st.set_page_config(page_title="RAG Chat", page_icon="📘")
@@ -10,6 +13,12 @@ def main():
 
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
+
+    for q, a in st.session_state.chat_history:
+        with st.chat_message("user"):
+            st.write(q)
+        with st.chat_message("assistant"):
+            st.write(a)
 
     user_input = st.chat_input("Ask anything from your PDFs...")
 

@@ -67,11 +67,13 @@ git clone https://github.com/Islam-Ragab8/RAG-APP
 cd  RAG-APP
 ```
 2-Create a .env file for environment variables (optional, e.g., API keys):
+
 ```bash
  API_KEY=your_api_key_here
  ```
 
 3-Run the Streamlit app:
+
  ```bash
  streamlit run app.py
  ```
